@@ -69,7 +69,6 @@ namespace q3
             connections_times +=  time2minute(match[5]);
             connections_times +=  time2minute(match[6]);
             size_t price{static_cast<size_t>(std::stoi(match[7]))};
-            std::cout << connections_times << std::endl;
             flights.push(Flight{flight_number,duration,connections,connections_times,price});
             txt = match.suffix().str();
         }
