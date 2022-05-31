@@ -29,29 +29,38 @@ namespace q2
 
     std::vector<Patient> read_file(std::string filename)
     {
-            std::vector<Patient> patients{};
-            std::ifstream file(filename);
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            std::string txt = buffer.str();
-            std::regex pattern(R"((\w+)\ ?,(\w+)\ ?,(\d+)\,(\d+)\,(\d+)\,(\d+))");
-            std::smatch match;
-            while(std::regex_search(txt, match, pattern))
-            {   
-                std::cout<< match[0] << std::endl;
-                
-                std::string first_name{match[1]};
-                std::string last_name{match[2]};
-                std::string name{first_name+last_name};
-                size_t age {static_cast<size_t>(std::stoi(match[3]))};
-                size_t smokes {static_cast<size_t>(std::stoi(match[4]))};
-                size_t area_q {static_cast<size_t>(std::stoi(match[5]))};
-                size_t alkhol{static_cast<size_t>(std::stoi(match[6]))};
-                patients.push_back(Patient{name,age,smokes,area_q,alkhol});
-                txt = match.suffix().str();
-            }
-            return patients;
+        std::vector<Patient> patients{};
+        std::ifstream file(filename);
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string txt = buffer.str();
+        std::regex pattern(R"((\w+)\ ?,(\w+)\ ?,(\d+)\,(\d+)\,(\d+)\,(\d+))");
+        std::smatch match;
+        while(std::regex_search(txt, match, pattern))
+        {   
+            std::string first_name{match[1]};
+            std::string last_name{match[2]};
+            std::string name{first_name+" "+last_name};
+            size_t age {static_cast<size_t>(std::stoi(match[3]))};
+            size_t smokes {static_cast<size_t>(std::stoi(match[4]))};
+            size_t area_q {static_cast<size_t>(std::stoi(match[5]))};
+            size_t alkhol{static_cast<size_t>(std::stoi(match[6]))};
+            patients.push_back(Patient{name,age,smokes,area_q,alkhol});
+            txt = match.suffix().str();
+        }
+        return patients;
     }
+
+    void sort(std::vector<Patient>& patients)
+    {
+        std::sort(patients.begin(),patients.end(),[](Patient& p1, Patient& p2)
+        {
+            size_t p1_prob{3*p1.age + 5*p1.smokes + 2*p1.area_q + 4*p1.alkhol};
+            size_t p2_prob{3*p2.age + 5*p2.smokes + 2*p2.area_q + 4*p2.alkhol};
+            return p1_prob > p2_prob;
+        });
+    }
+
 }
 
 #endif //Q2_H
