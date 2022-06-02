@@ -10,7 +10,7 @@
 
 namespace q2
 {
-    struct Patient
+    struct Patient 
     {
         Patient(std::string _name,size_t _age,size_t _smokes,size_t _area_q, size_t _alkhol)
         :name{_name}
@@ -27,17 +27,21 @@ namespace q2
     };
     
 
-    std::vector<Patient> read_file(std::string filename)
+    std::vector<Patient> read_file(std::string filename) 
     {
+        // reading from file :
         std::vector<Patient> patients{};
         std::ifstream file(filename);
         std::stringstream buffer;
-        buffer << file.rdbuf();
+        buffer << file.rdbuf(); 
         std::string txt = buffer.str();
-        std::regex pattern(R"((\w+)\ ?,(\w+)\ ?,(\d+)\,(\d+)\,(\d+)\,(\d+))");
+
+        // finding patients information using:
+        std::regex pattern(R"((\w+)\ ?,(\w+)\ ?,(\d+)\,(\d+)\,(\d+)\,(\d+))"); //pattern for getting info
         std::smatch match;
         while(std::regex_search(txt, match, pattern))
         {   
+
             std::string first_name{match[1]};
             std::string last_name{match[2]};
             std::string name{first_name+" "+last_name};
@@ -53,7 +57,8 @@ namespace q2
 
     void sort(std::vector<Patient>& patients)
     {
-        std::sort(patients.begin(),patients.end(),[](Patient& p1, Patient& p2)
+        // using STL function sort with call back lambda function :
+        std::sort(patients.begin(),patients.end(),[](Patient& p1, Patient& p2) 
         {
             size_t p1_prob{3*p1.age + 5*p1.smokes + 2*p1.area_q + 4*p1.alkhol};
             size_t p2_prob{3*p2.age + 5*p2.smokes + 2*p2.area_q + 4*p2.alkhol};

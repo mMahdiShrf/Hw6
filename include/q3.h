@@ -11,7 +11,7 @@
 
 
 namespace q3
-{
+{   
     struct Flight
     {
     Flight(std::string _flight_number, size_t _duration, size_t _connections, size_t _connection_times, size_t _price)
@@ -28,35 +28,39 @@ namespace q3
 	size_t price;
     };
 
+    // function to turn /d/dh/d/dm format to time duration
     size_t time2minute(std::string time)
     {
         if(time.empty())
             return 0;
-        std::regex pattern(R"((\d+)h(\d+)?m?)");
+        std::regex pattern(R"((\d+)h(\d+)?m?)"); // pattern to extract 
         std::smatch match;
         size_t minute{};
         std::regex_search(time, match,pattern);
         minute += static_cast<size_t>(std::stoi(match[1]))*60;
-        std::string sth {match[2]};
+        std::string sth {match[2]}; 
         if(sth.empty())
             return minute;
         else
             return minute + static_cast<size_t>(std::stoi(match[2]));
     }
 
+    // callback function to sort priority queue 
     auto comparison {[](Flight f1, Flight f2){
         return (f1.duration+f1.connection_times+ 3*f1.price) >
         (f2.duration+f2.connection_times+ 3*f2.price);
     }};
 
     auto gather_flights(std::string filename)
-    {
-
+    {   
         std::priority_queue<Flight,std::vector<Flight>,decltype(comparison)> flights{comparison};
+        // reading from file:
         std::ifstream file(filename);
         std::stringstream buffer;
         buffer << file.rdbuf();
         std::string txt = buffer.str();
+
+        // finding infromation using regex:
         std::regex pattern(R"(\d+\-\ flight_number:(\w+)\ \-\ duration:(\w+)\ \-\ connections:(\d+)\ \-\ connection_times:(\w+\,?)(\w+\,?)?(\w+\,?)?\ \-\ price:(\d+))");
         std::smatch match;
         while(std::regex_search(txt, match, pattern))
@@ -72,12 +76,8 @@ namespace q3
             flights.push(Flight{flight_number,duration,connections,connections_times,price});
             txt = match.suffix().str();
         }
-
-
         return flights;
     }
-    
-
 };
 
     

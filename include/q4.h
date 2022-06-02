@@ -30,6 +30,7 @@ namespace q4
         double sum_x{};
         double sum_y{};
         double weights{};
+        // finding sum of x and y and accuracies using accumulate STL function in numeric library with lambda function lambda function :
         sum_x  = std::accumulate(sensors.begin(),sensors.end(),sum_x,[](double sum_result,Sensor s){return sum_result+s.pos.x*s.accuracy;});
         sum_y = std::accumulate(sensors.begin(),sensors.end(),sum_y,[](double sum_result,Sensor s){return sum_result+s.pos.y*s.accuracy;});
         weights=  std::accumulate(sensors.begin(),sensors.end(),weights,[](double sum_result,Sensor s){return sum_result+s.accuracy;});
