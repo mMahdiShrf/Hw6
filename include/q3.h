@@ -29,20 +29,22 @@ namespace q3
     };
 
     // function to turn /d/dh/d/dm format to time duration
-    size_t time2minute(std::string time)
+    size_t time2minute(std::string times)
     {
-        if(time.empty())
-            return 0;
-        std::regex pattern(R"((\d+)h(\d+)?m?)"); // pattern to extract 
+        std::regex pattern(R"((\d+)h(\d+)?m?\,?)"); // pattern to extract 
         std::smatch match;
         size_t minute{};
-        std::regex_search(time, match,pattern);
-        minute += static_cast<size_t>(std::stoi(match[1]))*60;
-        std::string sth {match[2]}; 
-        if(sth.empty())
-            return minute;
-        else
-            return minute + static_cast<size_t>(std::stoi(match[2]));
+        while(std::regex_search(times, match, pattern))
+        {
+            minute += static_cast<size_t>(std::stoi(match[1]))*60;
+            std::string sth {match[2]}; 
+            if(sth.empty())
+                minute += 0;
+            else 
+                minute += static_cast<size_t>(std::stoi(match[2]));
+            times = match.suffix().str();
+        }
+        return minute;
     }
 
     // callback function to sort priority queue 
@@ -61,18 +63,15 @@ namespace q3
         std::string txt = buffer.str();
 
         // finding infromation using regex:
-        std::regex pattern(R"(\d+\-\ flight_number:(\w+)\ \-\ duration:(\w+)\ \-\ connections:(\d+)\ \-\ connection_times:(\w+\,?)(\w+\,?)?(\w+\,?)?\ \-\ price:(\d+))");
+        std::regex pattern(R"(\d+\-\ flight_number:(\w+)\ \-\ duration:(\w+)\ \-\ connections:(\d+)\ \-\ connection_times:([\w,]+)\ \-\ price:(\d+))");
         std::smatch match;
         while(std::regex_search(txt, match, pattern))
         {   
             std::string flight_number{match[1]};
             size_t duration{time2minute(match[2])};
             size_t connections{static_cast<size_t>(std::stoi(match[3]))};
-            size_t connections_times{};
-            connections_times +=  time2minute(match[4]);
-            connections_times +=  time2minute(match[5]);
-            connections_times +=  time2minute(match[6]);
-            size_t price{static_cast<size_t>(std::stoi(match[7]))};
+            size_t connections_times{time2minute((match[4]))};
+            size_t price{static_cast<size_t>(std::stoi(match[5]))};
             flights.push(Flight{flight_number,duration,connections,connections_times,price});
             txt = match.suffix().str();
         }
