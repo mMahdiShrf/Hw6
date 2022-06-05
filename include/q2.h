@@ -27,7 +27,7 @@ namespace q2
     };
     
 
-    std::vector<Patient> read_file(std::string filename) 
+    static std::vector<Patient> read_file(std::string filename) 
     {
         // reading from file :
         std::vector<Patient> patients{};
@@ -55,7 +55,7 @@ namespace q2
         return patients;
     }
 
-    void sort(std::vector<Patient>& patients)
+    inline void sort(std::vector<Patient>& patients)
     {
         // using STL function sort with call back lambda function :
         std::sort(patients.begin(),patients.end(),[](Patient& p1, Patient& p2) 

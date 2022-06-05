@@ -25,7 +25,7 @@ namespace q4
         Vector2D pos;
         double accuracy;    
     };
-    Vector2D kalman_filter(std::vector<Sensor> sensors)
+    inline Vector2D kalman_filter(std::vector<Sensor> sensors)
     {
         double sum_x{};
         double sum_y{};

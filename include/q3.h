@@ -29,7 +29,7 @@ namespace q3
     };
 
     // function to turn /d/dh/d/dm format to time duration
-    size_t time2minute(std::string times)
+    static size_t time2minute(std::string times)
     {
         std::regex pattern(R"((\d+)h(\d+)?m?\,?)"); // pattern to extract 
         std::smatch match;
@@ -48,12 +48,12 @@ namespace q3
     }
 
     // callback function to sort priority queue 
-    auto comparison {[](Flight f1, Flight f2){
+    inline auto comparison {[](Flight f1, Flight f2){
         return (f1.duration+f1.connection_times+ 3*f1.price) >
         (f2.duration+f2.connection_times+ 3*f2.price);
     }};
 
-    auto gather_flights(std::string filename)
+    static auto gather_flights(std::string filename)
     {   
         std::priority_queue<Flight,std::vector<Flight>,decltype(comparison)> flights{comparison};
         // reading from file:
